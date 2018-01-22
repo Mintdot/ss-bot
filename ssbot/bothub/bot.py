@@ -3,6 +3,7 @@
 from __future__ import (absolute_import, division, print_function, unicode_literals)
 
 from bothub_client.bot import BaseBot
+from bothub_client.messages import Message
 
 
 class Bot(BaseBot):
@@ -23,19 +24,19 @@ class Bot(BaseBot):
     """
 
     def handle_message(self, event, context):
-        """Handle a message received
+        message = event.get('content')
+        if message == '/start':
+            self.start_message(event)
+        elif message == '안녕':
+            self.hello_message(event)
 
-        event is a dict and contains trigger info.
+    def start_message(self, event):
+        start = Message(event).set_text('시작')\
+            .add_keyboard_button('1번')\
+            .add_keyboard_button('2번')
 
-        {
-           "trigger": "webhook",
-           "channel": "<name>",
-           "sender": {
-              "id": "<chat_id>",
-              "name": "<nickname>"
-           },
-           "content": "<message content>",
-           "raw_data": <unmodified data itself webhook received>
-        }
-        """
-        self.send_message('Echo: {}'.format(event['content']))
+        self.send_message(start)
+
+    def hello_message(self, event):
+        me = event.get('sender')
+        self.send_message('{}님 안녕하세요.'.format(me['name']))
