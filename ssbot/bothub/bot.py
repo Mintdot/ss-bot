@@ -25,18 +25,34 @@ class Bot(BaseBot):
 
     def handle_message(self, event, context):
         message = event.get('content')
-        if message == '/start':
-            self.start_message(event)
-        elif message == '안녕':
-            self.hello_message(event)
+        if message == '/help':
+            self.help_message(event)
+        elif message == '날씨':
+            self.weather_message(event)
+        elif message == '버스':
+            self.bus_message()
+        else:
+            self.what_message(event)
 
-    def start_message(self, event):
-        start = Message(event).set_text('시작')\
-            .add_keyboard_button('1번')\
-            .add_keyboard_button('2번')
+    def help_message(self, event):
+        help = Message(event).set_text('무엇을 도와드릴까요?')\
+            .add_keyboard_button('날씨')\
+            .add_keyboard_button('버스')
 
-        self.send_message(start)
+        self.send_message(help)
 
-    def hello_message(self, event):
-        me = event.get('sender')
-        self.send_message('{}님 안녕하세요.'.format(me['name']))
+    def weather_message(self, event):
+        return
+
+    def bus_message(self):
+        return
+
+    def what_message(self, event):
+        member = event.get('sender')
+        member_name = member['name']
+
+        what = "{}님이 무슨 말씀을 하시는지 잘 모르겠네요\n" \
+               "\"/help\"라고 입력해주시면 제가 도와드릴게요.".format(member_name)
+
+        self.send_message(what)
+
