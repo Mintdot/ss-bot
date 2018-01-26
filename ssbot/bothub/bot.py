@@ -31,32 +31,35 @@ class Bot(BaseBot):
 
         if location:
             self.coord_message(location)
-        elif message == '/help':
-            self.help_message(event)
+        elif message == '/start':
+            self.start_message(event)
         elif message == '날씨':
             self.location_message(event)
         elif message == '버스':
             self.bus_message()
+        elif message == '목록으로':
+            self.start_message(event)
         else:
             self.what_message(event)
 
-    def help_message(self, event):
-        help = Message(event).set_text('무엇을 도와드릴까요?') \
+    def start_message(self, event):
+        start = Message(event).set_text('무엇을 도와드릴까요?') \
             .add_keyboard_button('날씨') \
             .add_keyboard_button('버스')
 
-        self.send_message(help)
+        self.send_message(start)
 
     def location_message(self, event):
         location = Message(event).set_text('현재 위치 전송') \
-            .add_location_request('Send Location')
+            .add_location_request('위치전송') \
+            .add_keyboard_button('목록으로')
 
         self.send_message(location)
 
     def coord_message(self, location):
-        app_id = '58d7d00ad2c80ae28b09f1ac57b5d894'
         lat = location['latitude']
         lon = location['longitude']
+        app_id = '58d7d00ad2c80ae28b09f1ac57b5d894'
         weather = get_coord(lat, lon, app_id)
 
         self.send_message(weather)
@@ -65,9 +68,9 @@ class Bot(BaseBot):
         return
 
     def what_message(self, event):
-        member = event.get('sender')['name']
+        user = event.get('sender')['name']
 
         what = "{}님이 무슨 말씀을 하시는지 잘 모르겠네요\n" \
-               "\"/help\"라고 입력해주시면 제가 도와드릴게요.".format(member)
+               "\"/start\"라고 입력해주시면 제가 도와드릴게요.".format(user)
 
         self.send_message(what)
