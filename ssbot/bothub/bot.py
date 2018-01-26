@@ -6,6 +6,7 @@ from bothub_client.bot import BaseBot
 from bothub_client.messages import Message
 
 from .weather import get_coord
+from .bus import bus_response
 
 
 class Bot(BaseBot):
@@ -36,9 +37,18 @@ class Bot(BaseBot):
         elif message == '날씨':
             self.location_message(event)
         elif message == '버스':
-            self.bus_message()
+            self.bus_message(event)
         elif message == '목록으로':
             self.start_message(event)
+        elif message == '신용산역':
+            data = '03561'
+            self.bus_response(data)
+        elif message == '삼각지역':
+            data = '03567'
+            self.bus_response(data)
+        elif message == '녹사평역':
+            data = ''
+            self.bus_response(data)
         else:
             self.what_message(event)
 
@@ -64,8 +74,19 @@ class Bot(BaseBot):
 
         self.send_message(weather)
 
-    def bus_message(self):
-        return
+    def bus_message(self, event):
+        bus = Message(event).set_text('어디를 조회 할까요?') \
+            .add_keyboard_button('신용산역') \
+            .add_keyboard_button('삼각지역') \
+            .add_keyboard_button('녹사평역') \
+            .add_keyboard_button('목록으로')
+
+        self.send_message(bus)
+
+    def bus_response(self, data):
+        response = bus_response(data)
+
+        self.send_message(response)
 
     def what_message(self, event):
         user = event.get('sender')['name']
