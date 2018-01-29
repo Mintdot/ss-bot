@@ -47,7 +47,7 @@ class Bot(BaseBot):
             data = '03567'
             self.bus_response(data)
         elif message == '녹사평역':
-            data = ''
+            data = '03738'
             self.bus_response(data)
         else:
             self.what_message(event)
